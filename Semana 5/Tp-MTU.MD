@@ -88,6 +88,41 @@ Donde:
 
 ## 4. Codificación de una máquina simple
 
+Se define la MT que acepta cadenas terminadas en `01`.
+ 
+**Convención de codificación binaria:**
+ 
+Como la máquina tiene 5 estados, con 2 bits no alcanza (solo representa 4 combinaciones). Se usan 3 bits para los estados. Como hay 3 símbolos (0, 1 y blanco), se usan 2 bits para los símbolos.
+ 
+```
+Estados:   q0=000, q1=001, q2=010, q3=011, q4=100
+Símbolos:  0=00,   1=01,   □=10
+Dirección: R=0,    L=1
+```
+ 
+Cada transición ocupa 11 bits fijos:
+```
+estado actual (3) + símbolo lee (2) + nuevo estado (3) + símbolo escribe (2) + dirección (1)
+```
+ 
+**Transiciones codificadas:**
+ 
+```
+00000001000   → q0 lee 0 → q1, escribe 0, R
+00001000010   → q0 lee 1 → q0, escribe 1, R
+00010011100   → q0 lee □ → q3, escribe □, R
+00100001000   → q1 lee 0 → q1, escribe 0, R
+00101010010   → q1 lee 1 → q2, escribe 1, R
+00110011100   → q1 lee □ → q3, escribe □, R
+01000001000   → q2 lee 0 → q1, escribe 0, R
+01001000010   → q2 lee 1 → q0, escribe 1, R
+01010100100   → q2 lee □ → q4, escribe □, R
+```
+La cadena completa queda leyendo el estado q0 y el valor 0 y recibe la entrada 01
+```
+*01 $ 0000 # 00000001000 # 00001000010 # 00010011100 # 00100001000 # 00101010010 # 00110011100 # 01000001000 # 01001000010 # 01010100100
+´´´
+
 ## 5. Simulación básica en Python
 
 Se implementó un simulador que recibe la codificación de una MT y una cadena de entrada, y simula paso a paso su ejecución. El código se adjunta en el archivo `MTU.py`.
