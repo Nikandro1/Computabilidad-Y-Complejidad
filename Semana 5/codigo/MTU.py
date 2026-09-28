@@ -2,11 +2,6 @@ BLANCO = 2  # Símbolo especial para celda vacía
 
 
 def crear_maquina(transiciones, estado_inicial, estados_finales):
-    """    Crea la descripción ⟨M⟩ de una Máquina de Turing.
-    Parámetros:
-        transiciones   : dict { (estado, símbolo): (nuevo_estado, símbolo_escrito, dirección) }
-        estado_inicial : int
-        estados_finales: set de ints    """
     return {
         "transiciones": transiciones,
         "estado_inicial": estado_inicial,
@@ -15,25 +10,13 @@ def crear_maquina(transiciones, estado_inicial, estados_finales):
 
 
 def simular(maquina, entrada, max_pasos=1000, verbose=True):
-    """    Simula la ejecución de la máquina sobre la entrada dada.
-    Equivale a U(⟨M⟩, w).
-    Parámetros:
-        maquina   : dict creado con crear_maquina()
-        entrada   : lista de ints (la cadena w)
-        max_pasos : límite de pasos para detectar ciclos infinitos
-        verbose   : si True, imprime la traza paso a paso
-    Retorna:
-        True si acepta, False si rechaza
-    """
-    # ── Inicialización ──────────────────────────────────────────────
+
     transiciones   = maquina["transiciones"]
     estado_final   = maquina["estados_finales"]
     estado_actual  = maquina["estado_inicial"]
 
-    # La cinta es un diccionario: posición → símbolo
-    # Así puede crecer infinitamente en ambas direcciones
     cinta = {i: s for i, s in enumerate(entrada)}
-    cabezal = 0  # posición inicial del cabezal
+    cabezal = 0 
 
     if verbose:
         print("=" * 55)
@@ -41,7 +24,7 @@ def simular(maquina, entrada, max_pasos=1000, verbose=True):
         print(f"Entrada w = {entrada}")
         print("=" * 55)
 
-    # ── Loop principal ───────────────────────────────────────────────
+
     for paso in range(1, max_pasos + 1):
 
         # 1. Leer el símbolo bajo el cabezal (blanco si la celda no existe)
@@ -60,7 +43,7 @@ def simular(maquina, entrada, max_pasos=1000, verbose=True):
                 print("=" * 55)
             return estado_actual in estado_final
 
-        # 3. Aplicar la transición
+
         nuevo_estado, simbolo_escrito, direccion = transiciones[clave]
 
         if verbose:
@@ -68,16 +51,16 @@ def simular(maquina, entrada, max_pasos=1000, verbose=True):
             print(f"  Regla: ({estado_actual}, {simbolo_leido}) "
                   f"→ estado={nuevo_estado}, escribe={simbolo_escrito}, mueve={dir_str}")
 
-        # 4. Escribir en la cinta
+
         cinta[cabezal] = simbolo_escrito
 
-        # 5. Mover el cabezal
+
         cabezal += 1 if direccion == 1 else -1
 
-        # 6. Actualizar estado
+
         estado_actual = nuevo_estado
 
-        # 7. ¿Llegamos a un estado final?
+
         if estado_actual in estado_final:
             if verbose:
                 _imprimir_configuracion(paso + 1, estado_actual, cinta, cabezal)
@@ -85,7 +68,7 @@ def simular(maquina, entrada, max_pasos=1000, verbose=True):
                 print("=" * 55)
             return True
 
-    # Superamos el límite de pasos (posible ciclo infinito)
+
     if verbose:
         print(f"\n  ⚠ Límite de {max_pasos} pasos alcanzado → posible ciclo infinito")
         print("=" * 55)
@@ -115,9 +98,6 @@ def _imprimir_configuracion(paso, estado, cinta, cabezal):
     print(f"  Cabezal:  {indicador}")
 
 
-# ════════════════════════════════════════════════════════════════════
-# MÁQUINAS DE EJEMPLO
-# ════════════════════════════════════════════════════════════════════
 
 def maquina_del_tp():
     """
@@ -172,9 +152,6 @@ def maquina_termina_en_01():
     return crear_maquina(transiciones, estado_inicial=0, estados_finales={4})
 
 
-# ════════════════════════════════════════════════════════════════════
-# PRUEBAS
-# ════════════════════════════════════════════════════════════════════
 
 def pruebas_maquina_tp():
     print("\n" + "█" * 55)
@@ -211,9 +188,6 @@ def pruebas_termina_en_01():
         print(f"  Entrada: {entrada} | Resultado: {'ACEPTA' if resultado else 'RECHAZA'} | {estado}\n")
 
 
-# ════════════════════════════════════════════════════════════════════
-# PUNTO DE ENTRADA
-# ════════════════════════════════════════════════════════════════════
 
 if __name__ == "__main__":
     print("\nElegí qué probar:")
